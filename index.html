@@ -47,9 +47,9 @@
         }
         .heart {
             width: 100px;
-            height: 150px;
+            height: 90px;
             position: relative;
-            margin: 60px auto 20px auto;
+            margin: 40px auto;
         }
         .heart::before,
         .heart::after {
@@ -118,7 +118,7 @@
 
     <!-- 背景音乐 -->
     <audio autoplay loop>
-        <source src="music.mp3" type="audio/mpeg">
+        <source src="assets/music.mp3" type="audio/mpeg">
         您的浏览器不支持音频播放。
     </audio>
 
@@ -152,18 +152,47 @@
 
     <!-- 天数计算 -->
     <script>
-        window.onload = function () {
-            function updateCounter() {
-                const startDate = new Date(2025, 3, 12); // 月份从0开始
-                const today = new Date();
-                startDate.setHours(0, 0, 0, 0);
-                today.setHours(0, 0, 0, 0);
-                const diffTime = today - startDate;
-                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-                document.getElementById("dayCounter").textContent =
-                    "我们已经在一起了 " + diffDays + " 天";
+        function updateCounter() {
+            const startDate = new Date(2025, 3, 12); // 月份从0开始
+            const today = new Date();
+            startDate.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0);
+            const diffTime = today - startDate;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            document.getElementById("dayCounter").textContent =
+                "我们已经在一起了 " + diffDays + " 天";
+        }
+
+        function loadMessages() {
+            const messages = JSON.parse(localStorage.getItem("messages")) || [];
+            const messageList = document.getElementById("messages");
+            messageList.innerHTML = "";
+            messages.forEach(msg => {
+                const li = document.createElement("li");
+                li.style.marginBottom = "12px";
+                li.style.background = "#fff0f5";
+                li.style.padding = "10px";
+                li.style.borderRadius = "8px";
+                li.textContent = msg;
+                messageList.appendChild(li);
+            });
+        }
+
+        function addMessage() {
+            const input = document.getElementById("messageInput");
+            const msg = input.value.trim();
+            if (msg) {
+                const messages = JSON.parse(localStorage.getItem("messages")) || [];
+                messages.push(msg);
+                localStorage.setItem("messages", JSON.stringify(messages));
+                input.value = "";
+                loadMessages();
             }
+        }
+
+        window.onload = function () {
             updateCounter();
+            loadMessages();
 
             // 启动烟花
             const container = document.body;
@@ -179,45 +208,12 @@
             });
             fireworks.start();
 
-            // 自动停止烟花（例如播放 15 秒）
+            // 自动停止烟花（播放 15 秒）
             setTimeout(() => {
                 fireworks.stop();
             }, 15000);
         };
-    // 留言板功能
-    function loadMessages() {
-        const messages = JSON.parse(localStorage.getItem("messages")) || [];
-        const messageList = document.getElementById("messages");
-        messageList.innerHTML = "";
-        messages.forEach(msg => {
-            const li = document.createElement("li");
-            li.style.marginBottom = "12px";
-            li.style.background = "#fff0f5";
-            li.style.padding = "10px";
-            li.style.borderRadius = "8px";
-            li.textContent = msg;
-            messageList.appendChild(li);
-        });
-    }
-
-    function addMessage() {
-        const input = document.getElementById("messageInput");
-        const msg = input.value.trim();
-        if (msg) {
-            const messages = JSON.parse(localStorage.getItem("messages")) || [];
-            messages.push(msg);
-            localStorage.setItem("messages", JSON.stringify(messages));
-            input.value = "";
-            loadMessages();
-        }
-    }
-
-    window.onload = function () {
-        updateCounter();
-        loadMessages();
-        // ... 保持原有烟花初始化部分
-    };
-</script>
+    </script>
 
 </body>
 </html>
