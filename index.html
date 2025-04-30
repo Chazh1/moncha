@@ -255,7 +255,7 @@
 
                 const words = [
             "我喜欢你", "想你了", "我爱你", "抱抱", "亲亲", "心动了", 
-            "love you", "miss you", "사랑해", "好きだよ", "❤️", "💕"
+            "love you", "miss you", "사랑해", "好きだよ",
         ];
         
         const canvas = document.getElementById('loveRainCanvas');
@@ -264,54 +264,76 @@
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         
-        const fontSize = 24;
-        const columns = Math.floor(canvas.width / fontSize);
-        const drops = new Array(columns).fill(0);
+        const fontSize = 20;
+        const characters = []
 
-                // 随机颜色生成函数
-        function getRandomColor() {
-            const r = Math.floor(Math.random() * 205) + 50;
-            const g = Math.floor(Math.random() * 205) + 50;
-            const b = Math.floor(Math.random() * 205) + 50;
-            return `rgba(${r},${g},${b}, 0.8)`;
-        }   
+                // 文字对象：竖排、多字、颜色、透明度
+        function createCharacter() {
+          const text = words[Math.floor(Math.random() * words.length)];
+          const x = Math.floor(Math.random() * (canvas.width / fontSize)) * fontSize;
+          const y = Math.floor(Math.random() * (canvas.height / fontSize)) * fontSize;
+          const color = `hsl(${Math.random() * 360}, 70%, 70%)`;
         
-        function drawRain() {
-            ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-            ctx.font = `${fontSize}px sans-serif`;
-        
-            for (let i = 0; i < drops.length; i++) {
-                // 控制频率：只有少量位置下落
-                if (Math.random() > 0.975) {
-                    const word = words[Math.floor(Math.random() * words.length)];
-                    const x = i * fontSize;
-                    const y = drops[i] * fontSize;
-        
-                    ctx.fillStyle = getRandomColor();
-        
-                    // 每个字符竖排输出
-                    for (let j = 0; j < word.length; j++) {
-                        ctx.fillText(word[j], x, y + j * fontSize);
-                    }
-        
-                    drops[i]++;
-                    if (y > canvas.height + word.length * fontSize) {
-                        drops[i] = 0;
-                    }
-                }
-            }
+          characters.push({
+            text,
+            x,
+            y,
+            color,
+            opacity: 0,       // 初始透明度
+            fadeIn: true,     // 是否正在淡入
+          });
         }
         
-        setInterval(drawRain, 100);
+        // 每帧绘制所有文字
+        function draw() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
         
+          ctx.font = `${fontSize}px sans-serif`;
         
+          for (let i = characters.length - 1; i >= 0; i--) {
+            const char = characters[i];
+        
+            // 设置透明度
+            ctx.globalAlpha = char.opacity;
+            ctx.fillStyle = char.color;
+        
+            // 绘制竖排
+            for (let j = 0; j < char.text.length; j++) {
+              ctx.fillText(char.text[j], char.x, char.y + j * fontSize);
+            }
+        
+            // 渐变处理
+            if (char.fadeIn) {
+              char.opacity += 0.02;
+              if (char.opacity >= 1) {
+                char.fadeIn = false;
+              }
+            } else {
+              char.opacity -= 0.005;
+              if (char.opacity <= 0) {
+                characters.splice(i, 1); // 移除淡出完的文字
+              }
+            }
+          }
+        
+          ctx.globalAlpha = 1; // 重置透明度
+        }
+        
+        // 控制文字生成频率
+        setInterval(() => {
+          if (Math.random() < 0.3) {
+            createCharacter();
+          }
+        }, 250);
+        
+        // 帧渲染
+        setInterval(draw, 50);
+        
+        // 画布适应窗口大小
         window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
         });
-        
         window.onload = function () {
             updateCounter();
             loadMessages();
