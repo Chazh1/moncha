@@ -12,7 +12,7 @@
               height: 100vh;
               overflow: hidden;
         }
-        .bg-imageF{
+        .bg-image{
               position: fixed;
               top: 0;
               left: 0;
@@ -31,6 +31,11 @@
               height: 100%;
               background-color: rgba(255,255,255,0.4);
               z-index: -2; /* 在背景图上面，在内容下面 */
+        }
+        /* 页面内容容器 */
+        .main-content {
+          position: relative;
+          z-index: 1; /* 一定要高于白色层 */
         }
 
         header {
@@ -134,234 +139,237 @@
    
 </head>
 <body>
-    <canvas id="loveRainCanvas" style="position:fixed;top:0;left:0;z-index:-1;"></canvas>
-    <!-- 背景音乐 -->
-    <audio autoplay loop>
-        <source src="assets/music.mp3" type="audio/mpeg">
-        您的浏览器不支持音频播放。
-    </audio>
-
-    <header>
-        我们的纪念时光
-    </header>
-
-    <main>
-        <img src=".jpg" alt="美好回忆照片">
-        <p>这一刻，我们曾一起走过。</p>
-        <p>感谢有你，让这段旅程变得如此特别。</p>
-
-        <div class="counter" id="dayCounter">我们已经在一起了 0 天</div>
-
-        <p>愿未来的每一天，我们都像今天一样微笑着相拥。</p>
-        <p>有你的日子，连时间都变得温柔。</p>
-        <h2 style="margin-top:50px; color:#ff6f91;">我们的留言板</h2>
-        <div id="messageBoard" style="max-width: 600px; margin: 0 auto;">
-            <textarea id="messageInput" placeholder="写下你此刻的想法吧..." style="width: 100%; padding: 10px; font-size: 16px; border-radius: 8px; border: 1px solid #ccc;"></textarea>
-            <button onclick="addMessage()" style="margin-top: 10px; padding: 10px 20px; background-color: #ff8fa3; color: white; border: none; border-radius: 8px; cursor: pointer;">留言</button>
-            <ul id="messages" style="text-align: left; padding-left: 0; list-style: none; margin-top: 20px;"></ul>
-        </div>
-
-    </main>
-
-     <!-- 👫 相遇模块 -->
-    <div id="meeting-container">
-        <div id="person1" class="person" style="left: 0;">
-            <img src="you.png" alt="你">
-        </div>
-        <div id="person2" class="person" style="right: 0;">
-          <img src="her.png" alt="她">
-        </div>
-     </div>
-     <div id="countdown-text">正在计算距离见面的天数...</div>
-    <!-- 天数计算 -->
-    <script>
-        function updateCounter() {
-            const startDate = new Date(2025, 3, 12); // 月份从0开始
-            const today = new Date();
-            startDate.setHours(0, 0, 0, 0);
-            today.setHours(0, 0, 0, 0);
-            const diffTime = today - startDate;
-            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-            document.getElementById("dayCounter").textContent =
-                "我们已经在一起了 " + diffDays + " 天";
-        }
-
-            // 更新留言并重新渲染
-       function loadMessages() {
-            const messages = JSON.parse(localStorage.getItem("messages")) || [];
-            const messageList = document.getElementById("messages");
-            messageList.innerHTML = "";
-            messages.forEach((msg, index) => {
-                const li = document.createElement("li");
-                li.style.marginBottom = "12px";
-                li.style.background = "#fff0f5";
-                li.style.padding = "10px";
-                li.style.borderRadius = "8px";
-                li.textContent = msg;
-
-            // 创建删除按钮
-                const deleteButton = document.createElement("button");
-                deleteButton.textContent = "删除";
-                deleteButton.style.marginLeft = "10px";
-                deleteButton.style.backgroundColor = "#ff6666";
-                deleteButton.style.color = "white";
-                deleteButton.style.border = "none";
-                deleteButton.style.padding = "5px 10px";
-                deleteButton.style.borderRadius = "5px";
-                deleteButton.style.cursor = "pointer";
-                deleteButton.onclick = function () {
-                    deleteMessage(index); // 删除当前留言
-                };
-
-            // 将删除按钮加入到每个留言中
-                li.appendChild(deleteButton);
-                messageList.appendChild(li);
-            });
-        }
-
-    // 删除留言
-       function deleteMessage(index) {
-            const messages = JSON.parse(localStorage.getItem("messages")) || [];
-            messages.splice(index, 1); // 删除指定索引的留言
-            localStorage.setItem("messages", JSON.stringify(messages)); // 更新本地存储
-            loadMessages(); // 重新加载留言
-        }
-
-    // 添加留言
-       function addMessage() {
-            const input = document.getElementById("messageInput");
-            const msg = input.value.trim();
-            if (msg) {
+    <div class="bg-image"></div>
+    <div class="white-overlay"></div>
+    <div class="main-content">
+        <canvas id="loveRainCanvas" style="position:fixed;top:0;left:0;z-index:-1;"></canvas>
+        <!-- 背景音乐 -->
+        <audio autoplay loop>
+            <source src="assets/music.mp3" type="audio/mpeg">
+            您的浏览器不支持音频播放。
+        </audio>
+    
+        <header>
+            我们的纪念时光
+        </header>
+    
+        <main>
+            <img src=".jpg" alt="美好回忆照片">
+            <p>这一刻，我们曾一起走过。</p>
+            <p>感谢有你，让这段旅程变得如此特别。</p>
+    
+            <div class="counter" id="dayCounter">我们已经在一起了 0 天</div>
+    
+            <p>愿未来的每一天，我们都像今天一样微笑着相拥。</p>
+            <p>有你的日子，连时间都变得温柔。</p>
+            <h2 style="margin-top:50px; color:#ff6f91;">我们的留言板</h2>
+            <div id="messageBoard" style="max-width: 600px; margin: 0 auto;">
+                <textarea id="messageInput" placeholder="写下你此刻的想法吧..." style="width: 100%; padding: 10px; font-size: 16px; border-radius: 8px; border: 1px solid #ccc;"></textarea>
+                <button onclick="addMessage()" style="margin-top: 10px; padding: 10px 20px; background-color: #ff8fa3; color: white; border: none; border-radius: 8px; cursor: pointer;">留言</button>
+                <ul id="messages" style="text-align: left; padding-left: 0; list-style: none; margin-top: 20px;"></ul>
+            </div>
+    
+        </main>
+    
+         <!-- 👫 相遇模块 -->
+        <div id="meeting-container">
+            <div id="person1" class="person" style="left: 0;">
+                <img src="you.png" alt="你">
+            </div>
+            <div id="person2" class="person" style="right: 0;">
+              <img src="her.png" alt="她">
+            </div>
+         </div>
+         <div id="countdown-text">正在计算距离见面的天数...</div>
+        <!-- 天数计算 -->
+        <script>
+            function updateCounter() {
+                const startDate = new Date(2025, 3, 12); // 月份从0开始
+                const today = new Date();
+                startDate.setHours(0, 0, 0, 0);
+                today.setHours(0, 0, 0, 0);
+                const diffTime = today - startDate;
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                document.getElementById("dayCounter").textContent =
+                    "我们已经在一起了 " + diffDays + " 天";
+            }
+    
+                // 更新留言并重新渲染
+           function loadMessages() {
                 const messages = JSON.parse(localStorage.getItem("messages")) || [];
-                messages.push(msg);
-                localStorage.setItem("messages", JSON.stringify(messages));
-                input.value = "";
+                const messageList = document.getElementById("messages");
+                messageList.innerHTML = "";
+                messages.forEach((msg, index) => {
+                    const li = document.createElement("li");
+                    li.style.marginBottom = "12px";
+                    li.style.background = "#fff0f5";
+                    li.style.padding = "10px";
+                    li.style.borderRadius = "8px";
+                    li.textContent = msg;
+    
+                // 创建删除按钮
+                    const deleteButton = document.createElement("button");
+                    deleteButton.textContent = "删除";
+                    deleteButton.style.marginLeft = "10px";
+                    deleteButton.style.backgroundColor = "#ff6666";
+                    deleteButton.style.color = "white";
+                    deleteButton.style.border = "none";
+                    deleteButton.style.padding = "5px 10px";
+                    deleteButton.style.borderRadius = "5px";
+                    deleteButton.style.cursor = "pointer";
+                    deleteButton.onclick = function () {
+                        deleteMessage(index); // 删除当前留言
+                    };
+    
+                // 将删除按钮加入到每个留言中
+                    li.appendChild(deleteButton);
+                    messageList.appendChild(li);
+                });
+            }
+    
+        // 删除留言
+           function deleteMessage(index) {
+                const messages = JSON.parse(localStorage.getItem("messages")) || [];
+                messages.splice(index, 1); // 删除指定索引的留言
+                localStorage.setItem("messages", JSON.stringify(messages)); // 更新本地存储
                 loadMessages(); // 重新加载留言
             }
-        }
-
-         // 相遇动画逻辑
-        const targetDate = new Date('2026-04-07'); // 🎯 修改为你们的见面日
-        const container = document.getElementById("meeting-container");
-        const containerWidth = container.offsetWidth;
-        const maxMove = containerWidth - 120; // 两人头像宽度和空隙
-
-        // 🕒 设置起始日期（只在第一次访问时保存）
-        let startDateStr = localStorage.getItem('startDate');
-        if (!startDateStr) {
-          const now = new Date();
-          localStorage.setItem('startDate', now.toISOString().split('T')[0]);
-          startDateStr = now.toISOString().split('T')[0];
-        }
-        const startDate = new Date(startDateStr);
-        const totalDays = Math.ceil((targetDate - startDate) / (1000 * 60 * 60 * 24));
     
-        function updateMeeting() {
-          const today = new Date();
-          const daysLeft = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24));
-    
-          const percent = Math.max(0, 1 - daysLeft / totalDays);
-          const move = percent * maxMove;
-    
-          document.getElementById("person1").style.left = `${move}px`;
-          document.getElementById("person2").style.right = `${move}px`;
-    
-          if (daysLeft > 0) {
-            document.getElementById("countdown-text").textContent = `还有 ${daysLeft} 天见面`;
-          } else {
-            document.getElementById("countdown-text").textContent = "🎉 今天见面啦！";
-          }
-        }
-
-                const words = [
-  "我爱你", "I love you", "Je t’aime", "Te amo", "Ich liebe dich",
-  "愛してる", "사랑해요", "Ti amo", "Eu te amo", "Я тебя люблю",
-  "Uhibbuk", "ฉันรักคุณ", "Main tumse pyaar karta hoon", "Aku cinta kamu",
-  "Seni seviyorum", "Σ' αγαπώ", "Anh yêu em", "Em yêu anh"
-];
-        
-        const canvas = document.getElementById('loveRainCanvas');
-        const ctx = canvas.getContext('2d');
-        
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        
-        const fontSize = 20;
-        const characters = []
-
-                // 文字对象：竖排、多字、颜色、透明度
-        function createCharacter() {
-          const text = words[Math.floor(Math.random() * words.length)];
-          const x = Math.floor(Math.random() * (canvas.width / fontSize)) * fontSize;
-          const y = Math.floor(Math.random() * (canvas.height / fontSize)) * fontSize;
-          const color = `hsl(${Math.random() * 360}, 70%, 70%)`;
-        
-          characters.push({
-            text,
-            x,
-            y,
-            color,
-            opacity: 0,       // 初始透明度
-            fadeIn: true,     // 是否正在淡入
-          });
-        }
-        
-        // 每帧绘制所有文字
-        function draw() {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-          ctx.font = `${fontSize}px sans-serif`;
-        
-          for (let i = characters.length - 1; i >= 0; i--) {
-            const char = characters[i];
-        
-            // 设置透明度
-            ctx.globalAlpha = char.opacity;
-            ctx.fillStyle = char.color;
-        
-            // 绘制竖排
-            for (let j = 0; j < char.text.length; j++) {
-              ctx.fillText(char.text[j], char.x, char.y + j * fontSize);
+        // 添加留言
+           function addMessage() {
+                const input = document.getElementById("messageInput");
+                const msg = input.value.trim();
+                if (msg) {
+                    const messages = JSON.parse(localStorage.getItem("messages")) || [];
+                    messages.push(msg);
+                    localStorage.setItem("messages", JSON.stringify(messages));
+                    input.value = "";
+                    loadMessages(); // 重新加载留言
+                }
             }
+    
+             // 相遇动画逻辑
+            const targetDate = new Date('2026-04-07'); // 🎯 修改为你们的见面日
+            const container = document.getElementById("meeting-container");
+            const containerWidth = container.offsetWidth;
+            const maxMove = containerWidth - 120; // 两人头像宽度和空隙
+    
+            // 🕒 设置起始日期（只在第一次访问时保存）
+            let startDateStr = localStorage.getItem('startDate');
+            if (!startDateStr) {
+              const now = new Date();
+              localStorage.setItem('startDate', now.toISOString().split('T')[0]);
+              startDateStr = now.toISOString().split('T')[0];
+            }
+            const startDate = new Date(startDateStr);
+            const totalDays = Math.ceil((targetDate - startDate) / (1000 * 60 * 60 * 24));
         
-            // 渐变处理
-            if (char.fadeIn) {
-              char.opacity += 0.02;
-              if (char.opacity >= 1) {
-                char.fadeIn = false;
-              }
-            } else {
-              char.opacity -= 0.005;
-              if (char.opacity <= 0) {
-                characters.splice(i, 1); // 移除淡出完的文字
+            function updateMeeting() {
+              const today = new Date();
+              const daysLeft = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24));
+        
+              const percent = Math.max(0, 1 - daysLeft / totalDays);
+              const move = percent * maxMove;
+        
+              document.getElementById("person1").style.left = `${move}px`;
+              document.getElementById("person2").style.right = `${move}px`;
+        
+              if (daysLeft > 0) {
+                document.getElementById("countdown-text").textContent = `还有 ${daysLeft} 天见面`;
+              } else {
+                document.getElementById("countdown-text").textContent = "🎉 今天见面啦！";
               }
             }
-          }
-        
-          ctx.globalAlpha = 1; // 重置透明度
-        }
-        
-        // 控制文字生成频率
-        setInterval(() => {
-          if (Math.random() < 0.5) {
-            createCharacter();
-          }
-        }, 250);
-        
-        // 帧渲染
-        setInterval(draw, 25);
-        
-        // 画布适应窗口大小
-        window.addEventListener('resize', () => {
-          canvas.width = window.innerWidth;
-          canvas.height = window.innerHeight;
-        });
-        window.onload = function () {
-            updateCounter();
-            loadMessages();
-            updateMeeting();
-        };
-    </script>
-
+    
+                    const words = [
+      "我爱你", "I love you", "Je t’aime", "Te amo", "Ich liebe dich",
+      "愛してる", "사랑해요", "Ti amo", "Eu te amo", "Я тебя люблю",
+      "Uhibbuk", "ฉันรักคุณ", "Main tumse pyaar karta hoon", "Aku cinta kamu",
+      "Seni seviyorum", "Σ' αγαπώ", "Anh yêu em", "Em yêu anh"
+    ];
+            
+            const canvas = document.getElementById('loveRainCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            const fontSize = 20;
+            const characters = []
+    
+                    // 文字对象：竖排、多字、颜色、透明度
+            function createCharacter() {
+              const text = words[Math.floor(Math.random() * words.length)];
+              const x = Math.floor(Math.random() * (canvas.width / fontSize)) * fontSize;
+              const y = Math.floor(Math.random() * (canvas.height / fontSize)) * fontSize;
+              const color = `hsl(${Math.random() * 360}, 70%, 70%)`;
+            
+              characters.push({
+                text,
+                x,
+                y,
+                color,
+                opacity: 0,       // 初始透明度
+                fadeIn: true,     // 是否正在淡入
+              });
+            }
+            
+            // 每帧绘制所有文字
+            function draw() {
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+              ctx.font = `${fontSize}px sans-serif`;
+            
+              for (let i = characters.length - 1; i >= 0; i--) {
+                const char = characters[i];
+            
+                // 设置透明度
+                ctx.globalAlpha = char.opacity;
+                ctx.fillStyle = char.color;
+            
+                // 绘制竖排
+                for (let j = 0; j < char.text.length; j++) {
+                  ctx.fillText(char.text[j], char.x, char.y + j * fontSize);
+                }
+            
+                // 渐变处理
+                if (char.fadeIn) {
+                  char.opacity += 0.02;
+                  if (char.opacity >= 1) {
+                    char.fadeIn = false;
+                  }
+                } else {
+                  char.opacity -= 0.005;
+                  if (char.opacity <= 0) {
+                    characters.splice(i, 1); // 移除淡出完的文字
+                  }
+                }
+              }
+            
+              ctx.globalAlpha = 1; // 重置透明度
+            }
+            
+            // 控制文字生成频率
+            setInterval(() => {
+              if (Math.random() < 0.5) {
+                createCharacter();
+              }
+            }, 250);
+            
+            // 帧渲染
+            setInterval(draw, 25);
+            
+            // 画布适应窗口大小
+            window.addEventListener('resize', () => {
+              canvas.width = window.innerWidth;
+              canvas.height = window.innerHeight;
+            });
+            window.onload = function () {
+                updateCounter();
+                loadMessages();
+                updateMeeting();
+            };
+        </script>
+    </div>
 </body>
 </html>
