@@ -6,24 +6,33 @@
     <title>我们的纪念网站</title>
     <style>
         body {
-              background-image: url('https://chazh1.github.io/moncha/2.jpg');
-              background-size: cover;        /* 拉伸或缩放以铺满整个屏幕 */
-              background-repeat: no-repeat;  /* 不重复 */
-              background-position: center;   /* 居中显示 */
-              background-attachment: fixed;  /* 固定背景，不随页面滚动 */
+              margin: 0;
+              padding: 0;
+              position: relative;
+              height: 100vh;
+              overflow: hidden;
+        }
+        .bg-imageF{
+              position: fixed;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background: url('https://chazh1.github.io/moncha/2.jpg') no-repeat center center;
+              background-size: cover;
+              z-index: -3; /* 最底层 */
         }
         /* 添加白色半透明层 */
-        body::before {
-          content: '';
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background-color: rgba(255, 255, 255, 0.4); /* 透明白层，0.4 可调整 */
-          z-index: 0;
-          pointer-events: none; /* 不影响点击 */
+        .white-overlay {
+              position: fixed;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background-color: rgba(255,255,255,0.4);
+              z-index: -2; /* 在背景图上面，在内容下面 */
         }
+
         header {
             background-color: #ff8fa3;
             color: white;
