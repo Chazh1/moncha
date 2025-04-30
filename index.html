@@ -114,7 +114,7 @@
    
 </head>
 <body>
-
+    <canvas id="loveRainCanvas" style="position:fixed;top:0;left:0;z-index:-1;"></canvas>
     <!-- 背景音乐 -->
     <audio autoplay loop>
         <source src="assets/music.mp3" type="audio/mpeg">
@@ -253,6 +253,47 @@
           }
         }
 
+                const words = [
+            "我喜欢你", "想你了", "我爱你", "抱抱", "亲亲", "心动了", 
+            "love you", "miss you", "사랑해", "好きだよ", "❤️", "💕"
+        ];
+        
+        const canvas = document.getElementById('loveRainCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        const fontSize = 22;
+        const columns = Math.floor(canvas.width / fontSize);
+        const drops = new Array(columns).fill(1);
+        
+        function drawRain() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+            ctx.font = `${fontSize}px sans-serif`;
+            ctx.fillStyle = "rgba(255, 105, 180, 0.8)";
+        
+            for (let i = 0; i < drops.length; i++) {
+                const text = words[Math.floor(Math.random() * words.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        
+                if (drops[i] * fontSize > canvas.height || Math.random() > 0.95) {
+                    drops[i] = 0;
+                }
+        
+                drops[i]++;
+            }
+        }
+        
+        setInterval(drawRain, 90);
+        
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+        
         window.onload = function () {
             updateCounter();
             loadMessages();
