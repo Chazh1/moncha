@@ -75,13 +75,43 @@
                 font-size: 20px;
             }
         }
+
+
+        /* 相遇倒计时模块 */
+        #meeting-container {
+          position: relative;
+          width: 100%;
+          max-width: 500px;
+          height: 120px;
+          margin: 40px auto;
+          background-color: #fce4ec;
+          overflow: hidden;
+          border-radius: 12px;
+          border: 2px dashed pink;
+        }
+    
+        .person {
+          position: absolute;
+          bottom: 10px;
+          width: 60px;
+          height: 60px;
+          transition: left 1s, right 1s;
+        }
+    
+        #person1 img, #person2 img {
+          width: 100%;
+          border-radius: 50%;
+          border: 2px solid #fff;
+        }
+
+        #countdown-text {
+          text-align: center;
+          margin-top: 10px;
+          font-size: 18px;
+          color: #d81b60;
+        }
     </style>
-
-    <!-- 樱花特效 -->
-    <script src="https://cdn.jsdelivr.net/gh/lindelof/flower-fall/flower.js"></script>
-
-    <!-- 烟花特效 -->
-    <script src="https://cdn.jsdelivr.net/npm/fireworks-js@2.1.2/dist/index.umd.js"></script>
+   
 </head>
 <body>
 
@@ -113,10 +143,16 @@
 
     </main>
 
-    <footer>
-        © 2025 by Quancheng Zhu. All rights reserved.
-    </footer>
-
+     <!-- 👫 相遇模块 -->
+    <div id="meeting-container">
+        <div id="person1" class="person" style="left: 0;">
+            <img src="you.png" alt="你">
+        </div>
+        <div id="person2" class="person" style="right: 0;">
+          <img src="her.png" alt="她">
+        </div>
+     </div>
+     <div id="countdown-text">正在计算距离见面的天数...</div>
     <!-- 天数计算 -->
     <script>
         function updateCounter() {
@@ -184,9 +220,34 @@
             }
         }
 
+         // 相遇动画逻辑
+        const targetDate = new Date('2026-04-30'); // 🎯 修改为你们的见面日
+        const container = document.getElementById("meeting-container");
+        const containerWidth = container.offsetWidth;
+        const maxMove = containerWidth - 120; // 两人头像宽度和空隙
+    
+        function updateMeeting() {
+          const today = new Date();
+          const daysLeft = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24));
+          const totalDays = Math.ceil((targetDate - new Date('2024-04-30')) / (1000 * 60 * 60 * 24)); // 起始时间
+    
+          const percent = Math.max(0, 1 - daysLeft / totalDays);
+          const move = percent * maxMove;
+    
+          document.getElementById("person1").style.left = `${move}px`;
+          document.getElementById("person2").style.right = `${move}px`;
+    
+          if (daysLeft > 0) {
+            document.getElementById("countdown-text").textContent = `还有 ${daysLeft} 天见面`;
+          } else {
+            document.getElementById("countdown-text").textContent = "🎉 今天见面啦！";
+          }
+        }
+
         window.onload = function () {
             updateCounter();
             loadMessages();
+            updateMeeting();
 
             // 启动烟花
             const container = document.body;
