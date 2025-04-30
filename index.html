@@ -33,6 +33,12 @@
             margin-top: 20px;
             line-height: 1.6;
         }
+        .counter {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e91e63;
+            margin-top: 30px;
+        }
         footer {
             margin-top: 40px;
             font-size: 14px;
@@ -55,6 +61,21 @@
 <footer>
     © 2025 by Quancheng Zhu. All rights reserved.
 </footer>
+<script>
+    function updateCounter() {
+        const startDate = new Date("2025-04-12");
+        const today = new Date();
+        // 清除时间部分，只保留日期
+        startDate.setHours(0, 0, 0, 0);
+        today.setHours(0, 0, 0, 0);
 
-</body>
+        const diffTime = today - startDate;
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+        document.getElementById("dayCounter").textContent =
+            "我们已经在一起了 " + diffDays + " 天";
+    }
+
+    updateCounter();
+</script></body>
 </html>
