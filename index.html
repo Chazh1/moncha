@@ -264,30 +264,48 @@
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         
-        const fontSize = 22;
+        const fontSize = 24;
         const columns = Math.floor(canvas.width / fontSize);
-        const drops = new Array(columns).fill(1);
+        const drops = new Array(columns).fill(0);
+
+                // 随机颜色生成函数
+        function getRandomColor() {
+            const r = Math.floor(Math.random() * 205) + 50;
+            const g = Math.floor(Math.random() * 205) + 50;
+            const b = Math.floor(Math.random() * 205) + 50;
+            return `rgba(${r},${g},${b}, 0.8)`;
+        }   
         
         function drawRain() {
-            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
         
             ctx.font = `${fontSize}px sans-serif`;
-            ctx.fillStyle = "rgba(255, 105, 180, 0.8)";
         
             for (let i = 0; i < drops.length; i++) {
-                const text = words[Math.floor(Math.random() * words.length)];
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                // 控制频率：只有少量位置下落
+                if (Math.random() > 0.975) {
+                    const word = words[Math.floor(Math.random() * words.length)];
+                    const x = i * fontSize;
+                    const y = drops[i] * fontSize;
         
-                if (drops[i] * fontSize > canvas.height || Math.random() > 0.95) {
-                    drops[i] = 0;
+                    ctx.fillStyle = getRandomColor();
+        
+                    // 每个字符竖排输出
+                    for (let j = 0; j < word.length; j++) {
+                        ctx.fillText(word[j], x, y + j * fontSize);
+                    }
+        
+                    drops[i]++;
+                    if (y > canvas.height + word.length * fontSize) {
+                        drops[i] = 0;
+                    }
                 }
-        
-                drops[i]++;
             }
         }
         
-        setInterval(drawRain, 90);
+        setInterval(drawRain, 100);
+        
         
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
