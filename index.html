@@ -325,13 +325,13 @@
         
         // 控制文字生成频率
         setInterval(() => {
-          if (Math.random() < 0.3) {
+          if (Math.random() < 0.5) {
             createCharacter();
           }
         }, 250);
         
         // 帧渲染
-        setInterval(draw, 50);
+        setInterval(draw, 25);
         
         // 画布适应窗口大小
         window.addEventListener('resize', () => {
