@@ -45,38 +45,7 @@
             color: #e91e63;
             margin-top: 30px;
         }
-        .heart {
-            width: 100px;
-            height: 90px;
-            position: relative;
-            margin: 40px auto;
-        }
-        .heart::before,
-        .heart::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            width: 100px;
-            height: 150px;
-            background: red;
-            border-radius: 50px 50px 0 0;
-            transform: rotate(-45deg);
-            transform-origin: 0 100%;
-            animation: heartbeat 1s infinite;
-        }
-        .heart::after {
-            left: 100px;
-            transform: rotate(45deg);
-            transform-origin: 100% 100%;
-        }
-        @keyframes heartbeat {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.1);
-            }
-        }
+        
         @keyframes fadeIn {
             from {opacity: 0;}
             to {opacity: 1;}
@@ -153,7 +122,7 @@
     <!-- 天数计算 -->
     <script>
         function updateCounter() {
-            const startDate = new Date(2025, 3, 12); // 月份从0开始
+            const startDate = new Date(2025, 4, 12); // 月份从0开始
             const today = new Date();
             startDate.setHours(0, 0, 0, 0);
             today.setHours(0, 0, 0, 0);
@@ -163,21 +132,48 @@
                 "我们已经在一起了 " + diffDays + " 天";
         }
 
-        function loadMessages() {
+            // 更新留言并重新渲染
+       function loadMessages() {
             const messages = JSON.parse(localStorage.getItem("messages")) || [];
             const messageList = document.getElementById("messages");
             messageList.innerHTML = "";
-            messages.forEach(msg => {
+            messages.forEach((msg, index) => {
                 const li = document.createElement("li");
                 li.style.marginBottom = "12px";
                 li.style.background = "#fff0f5";
                 li.style.padding = "10px";
                 li.style.borderRadius = "8px";
                 li.textContent = msg;
+
+            // 创建删除按钮
+                const deleteButton = document.createElement("button");
+                deleteButton.textContent = "删除";
+                deleteButton.style.marginLeft = "10px";
+                deleteButton.style.backgroundColor = "#ff6666";
+                deleteButton.style.color = "white";
+                deleteButton.style.border = "none";
+                deleteButton.style.padding = "5px 10px";
+                deleteButton.style.borderRadius = "5px";
+                deleteButton.style.cursor = "pointer";
+                deleteButton.onclick = function () {
+                    deleteMessage(index); // 删除当前留言
+                };
+
+            // 将删除按钮加入到每个留言中
+                li.appendChild(deleteButton);
                 messageList.appendChild(li);
             });
         }
 
+    // 删除留言
+        function deleteMessage(index) {
+            const messages = JSON.parse(localStorage.getItem("messages")) || [];
+            messages.splice(index, 1); // 删除指定索引的留言
+            localStorage.setItem("messages", JSON.stringify(messages)); // 更新本地存储
+            loadMessages(); // 重新加载留言
+        }
+
+    // 添加留言
         function addMessage() {
             const input = document.getElementById("messageInput");
             const msg = input.value.trim();
@@ -186,7 +182,7 @@
                 messages.push(msg);
                 localStorage.setItem("messages", JSON.stringify(messages));
                 input.value = "";
-                loadMessages();
+                loadMessages(); // 重新加载留言
             }
         }
 
