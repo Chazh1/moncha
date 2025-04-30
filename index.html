@@ -100,8 +100,6 @@
         <p>这一刻，我们曾一起走过。</p>
         <p>感谢有你，让这段旅程变得如此特别。</p>
 
-        <div class="heart"></div>
-
         <div class="counter" id="dayCounter">我们已经在一起了 0 天</div>
 
         <p>愿未来的每一天，我们都像今天一样微笑着相拥。</p>
@@ -166,7 +164,7 @@
         }
 
     // 删除留言
-        function deleteMessage(index) {
+       function deleteMessage(index) {
             const messages = JSON.parse(localStorage.getItem("messages")) || [];
             messages.splice(index, 1); // 删除指定索引的留言
             localStorage.setItem("messages", JSON.stringify(messages)); // 更新本地存储
@@ -174,7 +172,7 @@
         }
 
     // 添加留言
-        function addMessage() {
+       function addMessage() {
             const input = document.getElementById("messageInput");
             const msg = input.value.trim();
             if (msg) {
